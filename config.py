@@ -4,11 +4,12 @@ cfg = edict()
 cfg.dataset = "imagenet-1k"
 cfg.embedding_size = 512
 cfg.sample_rate = 1
-cfg.fp16 = True
+cfg.fp16 = False
 cfg.momentum = 0.9
 cfg.weight_decay = 5e-4
 cfg.batch_size = 64  # 128
-cfg.lr = 0.1  # 0.1 for batch size is 512
+cfg.base_batch = 128
+cfg.lr = 0.1  # 0.1 for base batch size
 
 cfg.nw = 20
 
@@ -17,8 +18,8 @@ cfg.en_erloss = False  # ER_LOSS
 cfg.num_deformable_groups = 2  # group of deformConv
 
 """ Setting EXP ID """
-cfg.exp_id = 3
-cfg.output = "res18_" + str(cfg.exp_id)
+cfg.exp_id = 5
+cfg.output = "res18_im1k" + str(cfg.exp_id)
 print('output path: ', cfg.output)
 
 if cfg.dataset == 'cifar-100':
@@ -35,13 +36,15 @@ if cfg.dataset == 'cifar-100':
     cfg.lr_func = lr_step_func
 
 elif cfg.dataset == 'imagenet-1k':
-    cfg.rec = '/home/yuange/dataset/imagenet_1k'
-    cfg.nw = 8
+    cfg.rec = '/tmp/train_tmp/imagenet_1k'
+    cfg.nw = 4
     cfg.num_classes = 1000
     cfg.num_epoch = 90
     cfg.warmup_epoch = -1
     cfg.val_targets = []
 
+    cfg.weight_decay = 1e-4
+    cfg.base_batch = 256
     cfg.batch_size = 64
 
     def lr_step_func(epoch):
